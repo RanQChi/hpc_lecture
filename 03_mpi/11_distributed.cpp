@@ -31,9 +31,9 @@ int main(int argc, char** argv) {
     //MPI_Send(jbody, N/size, MPI_BODY, send_to, 0, MPI_COMM_WORLD);
     //MPI_Recv(jbody, N/size, MPI_BODY, recv_from, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     MPI_Win win;
-    MPI_Win_create(jbody, N/size*sizeof(int), sizeof(int), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+    MPI_Win_create(jbody, N/size*sizeof(Body), sizeof(Body), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
     MPI_Win_fence(0, win);
-    MPI_Put(jbody, N/size, MPI_BODY, send_to, 0, N/size, MPI_INT, win);
+    MPI_Put(jbody, N/size, MPI_BODY, send_to, 0, N/size, MPI_BODY, win);
     MPI_Win_fence(0, win); 
     //**********************Change End  **************************
     for(int i=0; i<N/size; i++) {
@@ -47,6 +47,8 @@ int main(int argc, char** argv) {
         }
       }
     }
+    //------------------------------
+    MPI_Win_free(&win);
   }
   for(int irank=0; irank<size; irank++) {
     MPI_Barrier(MPI_COMM_WORLD);
